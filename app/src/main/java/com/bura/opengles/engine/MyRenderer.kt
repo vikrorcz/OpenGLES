@@ -61,6 +61,9 @@ class MyRenderer(context: Context): GLSurfaceView.Renderer {
         engine.screenHeight = ratio
         println("ScreenWidth: " + engine.screenWidth + "ScreenHeight: " + engine.screenHeight)
         Matrix.frustumM(engine.projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+        for (i in engine.projectionMatrix.indices) {
+            println("engine.projectionMatrix[$i] = ${engine.projectionMatrix[i]}")
+        }
     }
 
     override fun onDrawFrame(unused: GL10) {
@@ -69,8 +72,14 @@ class MyRenderer(context: Context): GLSurfaceView.Renderer {
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         Matrix.setLookAtM(engine.viewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+        for (i in engine.viewMatrix.indices) {
+            println("engine.viewMatrix[$i] = ${engine.viewMatrix[i]}")
+        }
         Matrix.multiplyMM(engine.vPMatrix, 0, engine.projectionMatrix, 0, engine.viewMatrix, 0)
 
+        //for (i in engine.vPMatrix.indices) {
+        //    println("engine.vPMatrix[$i] = ${engine.vPMatrix[i]}")
+        //}
         val time = SystemClock.uptimeMillis() % 4000L
         val angle = 0.090f * time.toInt()
 

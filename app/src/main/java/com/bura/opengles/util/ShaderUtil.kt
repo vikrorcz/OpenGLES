@@ -28,7 +28,7 @@ class ShaderUtil {
             GLES20.glGetShaderiv(shaderObjectId, GLES20.GL_COMPILE_STATUS, compileStatus, 0)
             if (Constants.LOGGER_ON) {
                 // Print the shader info log to the Android log output.
-                Log.v(TAG, """  Results of compiling source:  $shaderCode:${GLES20.glGetShaderInfoLog(shaderObjectId)} """.trimIndent())
+                Log.v(TAG, "Results of compiling source:  $shaderCode:${GLES20.glGetShaderInfoLog(shaderObjectId)}".trimIndent())
             }
             if (compileStatus[0] == 0) {
                 // If it failed, delete the shader object.
@@ -57,7 +57,7 @@ class ShaderUtil {
             GLES20.glGetProgramiv(programObjectId, GLES20.GL_LINK_STATUS, linkStatus, 0)
             if (Constants.LOGGER_ON) {
                 // Print the program info log to the Android log output.
-                Log.v(TAG, """Results of linking program: ${GLES20.glGetProgramInfoLog(programObjectId)}""".trimIndent())
+                Log.v(TAG, "Results of linking program: ${GLES20.glGetProgramInfoLog(programObjectId)}".trimIndent())
             }
             if (linkStatus[0] == 0) {
                 // If it failed, delete the program object.
@@ -75,7 +75,7 @@ class ShaderUtil {
             val validateStatus = IntArray(1)
             GLES20.glGetProgramiv(programObjectId, GLES20.GL_VALIDATE_STATUS, validateStatus, 0)
             Log.v(
-                TAG, """  Results of validating program: ${validateStatus[0]} Log:${GLES20.glGetProgramInfoLog(programObjectId)}""".trimIndent())
+                TAG, "Results of validating program: ${validateStatus[0]} Log:${GLES20.glGetProgramInfoLog(programObjectId)}".trimIndent())
             return validateStatus[0] != 0
         }
     }

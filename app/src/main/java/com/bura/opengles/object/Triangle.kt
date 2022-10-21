@@ -4,6 +4,7 @@ import android.opengl.GLES20
 import com.bura.opengles.engine.Engine
 import com.bura.opengles.util.Constants
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
 class Triangle(
@@ -23,7 +24,7 @@ class Triangle(
     override var vertexCount = triangleVertices.size / Constants.COORDS_PER_VERTEX
     override var vertexData: FloatBuffer? = ByteBuffer
     .allocateDirect(triangleVertices.size * Constants.BYTES_PER_FLOAT)
-    .order(java.nio.ByteOrder.nativeOrder())
+    .order(ByteOrder.nativeOrder())
         .asFloatBuffer().apply {
             put(triangleVertices)
             position(0)

@@ -1,0 +1,200 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.bura.desktop"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation files('libs\\lwjgl.jar')
+    implementation files('libs\\lwjgl-assimp.jar')
+    implementation files('libs\\lwjgl-assimp-javadoc.jar')
+    implementation files('libs\\lwjgl-assimp-natives-windows.jar')
+    implementation files('libs\\lwjgl-assimp-sources.jar')
+    implementation files('libs\\lwjgl-bgfx.jar')
+    implementation files('libs\\lwjgl-bgfx-javadoc.jar')
+    implementation files('libs\\lwjgl-bgfx-natives-windows.jar')
+    implementation files('libs\\lwjgl-bgfx-sources.jar')
+    implementation files('libs\\lwjgl-cuda.jar')
+    implementation files('libs\\lwjgl-cuda-javadoc.jar')
+    implementation files('libs\\lwjgl-cuda-sources.jar')
+    implementation files('libs\\lwjgl-egl.jar')
+    implementation files('libs\\lwjgl-egl-javadoc.jar')
+    implementation files('libs\\lwjgl-egl-sources.jar')
+    implementation files('libs\\lwjgl-glfw.jar')
+    implementation files('libs\\lwjgl-glfw-javadoc.jar')
+    implementation files('libs\\lwjgl-glfw-natives-windows.jar')
+    implementation files('libs\\lwjgl-glfw-sources.jar')
+    implementation files('libs\\lwjgl-javadoc.jar')
+    implementation files('libs\\lwjgl-jawt.jar')
+    implementation files('libs\\lwjgl-jawt-javadoc.jar')
+    implementation files('libs\\lwjgl-jawt-sources.jar')
+    implementation files('libs\\lwjgl-jemalloc.jar')
+    implementation files('libs\\lwjgl-jemalloc-javadoc.jar')
+    implementation files('libs\\lwjgl-jemalloc-natives-windows.jar')
+    implementation files('libs\\lwjgl-jemalloc-sources.jar')
+    implementation files('libs\\lwjgl-libdivide.jar')
+    implementation files('libs\\lwjgl-libdivide-javadoc.jar')
+    implementation files('libs\\lwjgl-libdivide-natives-windows.jar')
+    implementation files('libs\\lwjgl-libdivide-sources.jar')
+    implementation files('libs\\lwjgl-llvm.jar')
+    implementation files('libs\\lwjgl-llvm-javadoc.jar')
+    implementation files('libs\\lwjgl-llvm-natives-windows.jar')
+    implementation files('libs\\lwjgl-llvm-sources.jar')
+    implementation files('libs\\lwjgl-lmdb.jar')
+    implementation files('libs\\lwjgl-lmdb-javadoc.jar')
+    implementation files('libs\\lwjgl-lmdb-natives-windows.jar')
+    implementation files('libs\\lwjgl-lmdb-sources.jar')
+    implementation files('libs\\lwjgl-lz4.jar')
+    implementation files('libs\\lwjgl-lz4-javadoc.jar')
+    implementation files('libs\\lwjgl-lz4-natives-windows.jar')
+    implementation files('libs\\lwjgl-lz4-sources.jar')
+    implementation files('libs\\lwjgl-meow.jar')
+    implementation files('libs\\lwjgl-meow-javadoc.jar')
+    implementation files('libs\\lwjgl-meow-natives-windows.jar')
+    implementation files('libs\\lwjgl-meow-sources.jar')
+    implementation files('libs\\lwjgl-meshoptimizer.jar')
+    implementation files('libs\\lwjgl-meshoptimizer-javadoc.jar')
+    implementation files('libs\\lwjgl-meshoptimizer-natives-windows.jar')
+    implementation files('libs\\lwjgl-meshoptimizer-sources.jar')
+    implementation files('libs\\lwjgl-nanovg.jar')
+    implementation files('libs\\lwjgl-nanovg-javadoc.jar')
+    implementation files('libs\\lwjgl-nanovg-natives-windows.jar')
+    implementation files('libs\\lwjgl-nanovg-sources.jar')
+    implementation files('libs\\lwjgl-natives-windows.jar')
+    implementation files('libs\\lwjgl-nfd.jar')
+    implementation files('libs\\lwjgl-nfd-javadoc.jar')
+    implementation files('libs\\lwjgl-nfd-natives-windows.jar')
+    implementation files('libs\\lwjgl-nfd-sources.jar')
+    implementation files('libs\\lwjgl-nuklear.jar')
+    implementation files('libs\\lwjgl-nuklear-javadoc.jar')
+    implementation files('libs\\lwjgl-nuklear-natives-windows.jar')
+    implementation files('libs\\lwjgl-nuklear-sources.jar')
+    implementation files('libs\\lwjgl-odbc.jar')
+    implementation files('libs\\lwjgl-odbc-javadoc.jar')
+    implementation files('libs\\lwjgl-odbc-sources.jar')
+    implementation files('libs\\lwjgl-openal.jar')
+    implementation files('libs\\lwjgl-openal-javadoc.jar')
+    implementation files('libs\\lwjgl-openal-natives-windows.jar')
+    implementation files('libs\\lwjgl-openal-sources.jar')
+    implementation files('libs\\lwjgl-opencl.jar')
+    implementation files('libs\\lwjgl-opencl-javadoc.jar')
+    implementation files('libs\\lwjgl-opencl-sources.jar')
+    implementation files('libs\\lwjgl-opengl.jar')
+    implementation files('libs\\lwjgl-opengl-javadoc.jar')
+    implementation files('libs\\lwjgl-opengl-natives-windows.jar')
+    implementation files('libs\\lwjgl-opengl-sources.jar')
+    implementation files('libs\\lwjgl-opengles.jar')
+    implementation files('libs\\lwjgl-opengles-javadoc.jar')
+    implementation files('libs\\lwjgl-opengles-natives-windows.jar')
+    implementation files('libs\\lwjgl-opengles-sources.jar')
+    implementation files('libs\\lwjgl-openvr.jar')
+    implementation files('libs\\lwjgl-openvr-javadoc.jar')
+    implementation files('libs\\lwjgl-openvr-natives-windows.jar')
+    implementation files('libs\\lwjgl-openvr-sources.jar')
+    implementation files('libs\\lwjgl-openxr.jar')
+    implementation files('libs\\lwjgl-openxr-javadoc.jar')
+    implementation files('libs\\lwjgl-openxr-natives-windows.jar')
+    implementation files('libs\\lwjgl-openxr-sources.jar')
+    implementation files('libs\\lwjgl-opus.jar')
+    implementation files('libs\\lwjgl-opus-javadoc.jar')
+    implementation files('libs\\lwjgl-opus-natives-windows.jar')
+    implementation files('libs\\lwjgl-opus-sources.jar')
+    implementation files('libs\\lwjgl-ovr.jar')
+    implementation files('libs\\lwjgl-ovr-javadoc.jar')
+    implementation files('libs\\lwjgl-ovr-natives-windows.jar')
+    implementation files('libs\\lwjgl-ovr-sources.jar')
+    implementation files('libs\\lwjgl-par.jar')
+    implementation files('libs\\lwjgl-par-javadoc.jar')
+    implementation files('libs\\lwjgl-par-natives-windows.jar')
+    implementation files('libs\\lwjgl-par-sources.jar')
+    implementation files('libs\\lwjgl-remotery.jar')
+    implementation files('libs\\lwjgl-remotery-javadoc.jar')
+    implementation files('libs\\lwjgl-remotery-natives-windows.jar')
+    implementation files('libs\\lwjgl-remotery-sources.jar')
+    implementation files('libs\\lwjgl-rpmalloc.jar')
+    implementation files('libs\\lwjgl-rpmalloc-javadoc.jar')
+    implementation files('libs\\lwjgl-rpmalloc-natives-windows.jar')
+    implementation files('libs\\lwjgl-rpmalloc-sources.jar')
+    implementation files('libs\\lwjgl-shaderc.jar')
+    implementation files('libs\\lwjgl-shaderc-javadoc.jar')
+    implementation files('libs\\lwjgl-shaderc-natives-windows.jar')
+    implementation files('libs\\lwjgl-shaderc-sources.jar')
+    implementation files('libs\\lwjgl-sources.jar')
+    implementation files('libs\\lwjgl-spvc.jar')
+    implementation files('libs\\lwjgl-spvc-javadoc.jar')
+    implementation files('libs\\lwjgl-spvc-natives-windows.jar')
+    implementation files('libs\\lwjgl-spvc-sources.jar')
+    implementation files('libs\\lwjgl-sse.jar')
+    implementation files('libs\\lwjgl-sse-javadoc.jar')
+    implementation files('libs\\lwjgl-sse-natives-windows.jar')
+    implementation files('libs\\lwjgl-sse-sources.jar')
+    implementation files('libs\\lwjgl-stb.jar')
+    implementation files('libs\\lwjgl-stb-javadoc.jar')
+    implementation files('libs\\lwjgl-stb-natives-windows.jar')
+    implementation files('libs\\lwjgl-stb-sources.jar')
+    implementation files('libs\\lwjgl-tinyexr.jar')
+    implementation files('libs\\lwjgl-tinyexr-javadoc.jar')
+    implementation files('libs\\lwjgl-tinyexr-natives-windows.jar')
+    implementation files('libs\\lwjgl-tinyexr-sources.jar')
+    implementation files('libs\\lwjgl-tinyfd.jar')
+    implementation files('libs\\lwjgl-tinyfd-javadoc.jar')
+    implementation files('libs\\lwjgl-tinyfd-natives-windows.jar')
+    implementation files('libs\\lwjgl-tinyfd-sources.jar')
+    implementation files('libs\\lwjgl-tootle.jar')
+    implementation files('libs\\lwjgl-tootle-javadoc.jar')
+    implementation files('libs\\lwjgl-tootle-natives-windows.jar')
+    implementation files('libs\\lwjgl-tootle-sources.jar')
+    implementation files('libs\\lwjgl-vma.jar')
+    implementation files('libs\\lwjgl-vma-javadoc.jar')
+    implementation files('libs\\lwjgl-vma-natives-windows.jar')
+    implementation files('libs\\lwjgl-vma-sources.jar')
+    implementation files('libs\\lwjgl-vulkan.jar')
+    implementation files('libs\\lwjgl-vulkan-javadoc.jar')
+    implementation files('libs\\lwjgl-vulkan-sources.jar')
+    implementation files('libs\\lwjgl-xxhash.jar')
+    implementation files('libs\\lwjgl-xxhash-javadoc.jar')
+    implementation files('libs\\lwjgl-xxhash-natives-windows.jar')
+    implementation files('libs\\lwjgl-xxhash-sources.jar')
+    implementation files('libs\\lwjgl-yoga.jar')
+    implementation files('libs\\lwjgl-yoga-javadoc.jar')
+    implementation files('libs\\lwjgl-yoga-natives-windows.jar')
+    implementation files('libs\\lwjgl-yoga-sources.jar')
+    implementation files('libs\\lwjgl-zstd.jar')
+    implementation files('libs\\lwjgl-zstd-javadoc.jar')
+    implementation files('libs\\lwjgl-zstd-natives-windows.jar')
+    implementation files('libs\\lwjgl-zstd-sources.jar')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
