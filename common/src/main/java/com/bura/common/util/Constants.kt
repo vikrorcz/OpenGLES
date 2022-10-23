@@ -1,4 +1,4 @@
-package com.bura.desktop.util
+package com.bura.common.util
 
 class Constants {
     companion object {

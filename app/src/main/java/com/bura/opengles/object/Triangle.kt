@@ -19,7 +19,7 @@ class Triangle(
         centerX + 0.2f * size, centerY - 0.1f * size, 0.0f // bottom right
     )
 
-    override var color: FloatArray = floatArrayOf(1f, 1f, 1f)
+    override var color: FloatArray = floatArrayOf(1f, 1f, 1f, 1f)
 
     override var vertexCount = triangleVertices.size / Constants.COORDS_PER_VERTEX
     override var vertexData: FloatBuffer? = ByteBuffer

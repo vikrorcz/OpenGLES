@@ -52,7 +52,7 @@ class ShaderUtil {
             GLES20.glAttachShader(programObjectId, vertexShaderId)
             GLES20.glAttachShader(programObjectId, fragmentShaderId)
             GLES20.glLinkProgram(programObjectId)
-            GLES20.glLinkProgram(programObjectId)
+            //GLES20.glLinkProgram(programObjectId)
             val linkStatus = IntArray(1)
             GLES20.glGetProgramiv(programObjectId, GLES20.GL_LINK_STATUS, linkStatus, 0)
             if (Constants.LOGGER_ON) {

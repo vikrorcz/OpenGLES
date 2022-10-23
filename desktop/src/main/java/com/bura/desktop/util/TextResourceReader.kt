@@ -25,10 +25,7 @@ class TextResourceReader {
                 throw RuntimeException(
                     "Could not open resource: $resourceId", e
                 )
-            } /*catch (nfe: NotFoundException) {
-                throw RuntimeException("Resource not found: $resourceId", nfe)
             }
-            */
             return body.toString()
         }
     }
