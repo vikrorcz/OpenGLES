@@ -12,7 +12,6 @@ class TextResourceReader {
         ): String {
             val body = StringBuilder()
             try {
-
                 val inputStream = FileInputStream(resourceId)
                 val inputStreamReader = InputStreamReader(inputStream)
                 val bufferedReader = BufferedReader(inputStreamReader)

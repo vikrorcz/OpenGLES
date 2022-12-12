@@ -14,6 +14,6 @@ class Constants {
         const val STRIDE = COORDS_PER_VERTEX * 4
         const val BYTES_PER_FLOAT = 4
 
-        const val JOYSTICK_AREA = 0.6f
+        const val JOYSTICK_AREA = 0.3f
     }
 }

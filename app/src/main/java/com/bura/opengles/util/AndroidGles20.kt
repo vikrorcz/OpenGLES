@@ -1,16 +1,19 @@
-package com.bura.desktop.util
+package com.bura.opengles.util
 
-import org.lwjgl.opengles.GLES20
-import java.nio.*
+import android.opengl.GLES20
+import java.nio.Buffer
 import com.bura.common.util.GLES20 as GlesUtil
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
 
-class LwjglGles20: GlesUtil {
+class AndroidGles20: GlesUtil {
     override fun glClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
         GLES20.glClearColor(red, green, blue, alpha)
     }
 
     override fun glViewport(x: Int, y: Int, width: Int, height: Int) {
-       GLES20.glViewport(x, y, width, height)
+        GLES20.glViewport(x, y, width, height)
     }
 
     override fun glShaderSource(shader: Int, string: String) {
@@ -18,15 +21,15 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glCreateShader(type: Int) {
-      GLES20.glCreateShader(type)
+        GLES20.glCreateShader(type)
     }
 
     override fun glCompileShader(shader: Int) {
-      GLES20.glCompileShader(shader)
+        GLES20.glCompileShader(shader)
     }
 
     override fun glGetShaderiv(shader: Int, pname: Int, params: IntBuffer) {
-       GLES20.glGetShaderiv(shader, pname, params)
+        GLES20.glGetShaderiv(shader, pname, params)
     }
 
     override fun glDeleteShader(shader: Int) {
@@ -34,15 +37,15 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glAttachShader(program: Int, shader: Int) {
-      GLES20.glAttachShader(program, shader)
+        GLES20.glAttachShader(program, shader)
     }
 
     override fun glLinkProgram(program: Int) {
-       GLES20.glLinkProgram(program)
+        GLES20.glLinkProgram(program)
     }
 
     override fun glValidateProgram(program: Int) {
-       GLES20.glValidateProgram(program)
+        GLES20.glValidateProgram(program)
     }
 
     override fun glCreateProgram() {
@@ -50,7 +53,7 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glClear(mask: Int) {
-       GLES20.glClear(mask)
+        GLES20.glClear(mask)
     }
 
     override fun glUseProgram(program: Int) {
@@ -62,7 +65,7 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glEnableVertexAttribArray(index: Int) {
-       GLES20.glEnableVertexAttribArray(index)
+        GLES20.glEnableVertexAttribArray(index)
     }
 
     override fun glVertexAttribPointer(
@@ -81,7 +84,7 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glUniform4fv(location: Int, floatArray: FloatArray) {
-       GLES20.glUniform4fv(location, floatArray)
+        GLES20.glUniform4fv(location, 1, floatArray, 0)
     }
 
     override fun glUniformMatrix4fv(
@@ -89,7 +92,7 @@ class LwjglGles20: GlesUtil {
         transpose: Boolean,
         value: FloatArray
     ) {
-        GLES20.glUniformMatrix4fv(location, transpose, value)
+        GLES20.glUniformMatrix4fv(location, 1, transpose, value, 0)
     }
 
     override fun glDrawArrays(mode: Int, first: Int, count: Int) {
@@ -109,7 +112,7 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glGenTextures(n: Int, textures: IntArray) {
-        GLES20.glGenTextures(textures)
+        GLES20.glGenTextures(n, textures, 0)
     }
 
     override fun glEnable(cap: Int) {
@@ -125,13 +128,11 @@ class LwjglGles20: GlesUtil {
     }
 
     override fun glDrawElements(mode: Int, count: Int, type: Int, indices: ShortBuffer) {
-        if (type == GLES20.GL_UNSIGNED_SHORT) {
-            GLES20.glDrawElements(mode, indices)
-        }
+        GLES20.glDrawElements(mode, count, type, indices)
     }
 
     override fun glDrawElements(mode: Int, count: Int, type: Int, indices: Int) {
-        GLES20.glDrawElements(mode, count, type, indices.toLong())
+        GLES20.glDrawElements(mode, count, type, indices)
     }
 
     override fun glUniform1i(location: Int, x: Int) {
@@ -149,15 +150,7 @@ class LwjglGles20: GlesUtil {
         type: Int,
         pixels: Buffer
     ) {
-        if (pixels is ShortBuffer) {
-            GLES20.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
-        }
-        if (pixels is ByteBuffer) {
-            GLES20.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
-        }
-        if (pixels is FloatBuffer) {
-            GLES20.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
-        }
+        GLES20.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels)
     }
 
     override fun glGenerateMipmap(target: Int) {

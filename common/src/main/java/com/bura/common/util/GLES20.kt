@@ -1,11 +1,11 @@
 package com.bura.common.util
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.Buffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
 
-interface GLESUtil {
+interface GLES20 {
     companion object {
         const val GL_ES_VERSION_2_0 = 1
         const val GL_DEPTH_BUFFER_BIT = 0x00000100
@@ -350,7 +350,8 @@ interface GLESUtil {
 
     fun glEnableVertexAttribArray(index: Int)
 
-    fun glVertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, ptr: FloatBuffer)
+    fun glVertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int,
+                              ptr: FloatBuffer)
 
     fun glGetUniformLocation(program: Int, name: String): Int
 
@@ -361,4 +362,29 @@ interface GLESUtil {
     fun glDrawArrays(mode: Int, first: Int, count: Int)
 
     fun glDisableVertexAttribArray(index: Int)
+
+    fun glActiveTexture(texture: Int)
+
+    fun glBindTexture(target: Int, texture: Int)
+
+    fun glGenTextures(n: Int, textures: IntArray)
+
+    fun glEnable(cap: Int)
+
+    fun glBlendFunc(sFactor: Int, dFactor: Int)
+
+    fun glTexParameteri(target: Int, pname: Int, param: Int)
+
+    fun glDrawElements(mode: Int, count: Int, type: Int, indices: ShortBuffer)
+
+    fun glDrawElements(mode: Int, count: Int, type: Int, indices: Int)
+
+    fun glUniform1i(location: Int, x: Int)
+
+    fun glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int,  height: Int, border: Int,
+                     format: Int, type: Int, pixels: Buffer)
+
+    fun glGenerateMipmap(target: Int)
+
+    fun glPixelStorei(pname: Int, param: Int)
 }

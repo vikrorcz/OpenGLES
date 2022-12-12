@@ -1,8 +1,7 @@
-package com.bura.opengles.`object`
-
-import android.opengl.GLES20
-import com.bura.opengles.engine.Engine
-import com.bura.opengles.util.Constants
+package com.bura.common.objects
+import com.bura.common.engine.Engine
+import com.bura.common.util.Constants
+import com.bura.common.util.GLES20 as GLES20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -10,13 +9,12 @@ import java.nio.ShortBuffer
 
 class Rectangle(engine: Engine, centerX: Float, centerY: Float, size: Float) : Shape(engine, centerX, centerY) {
 
-
     //square
     private val rectangleVertices = floatArrayOf(
         centerX - 0.2f * size, centerY + 0.2f * size, 0.0f,  // top left
         centerX - 0.2f * size, centerY - 0.2f * size, 0.0f,  // bottom left
         centerX + 0.2f * size, centerY - 0.2f * size, 0.0f,  // bottom right
-        centerX + 0.2f * size, centerY + 0.2f * size, 0.0f // top right
+        centerX + 0.2f * size, centerY + 0.2f * size, 0.0f   // top right
     )
 
     override var vertexCount = rectangleVertices.size / Constants.COORDS_PER_VERTEX
@@ -39,29 +37,29 @@ class Rectangle(engine: Engine, centerX: Float, centerY: Float, size: Float) : S
         }
 
     override fun draw() {
-        GLES20.glUseProgram(engine.program)
+        Engine.gles20.glUseProgram(engine.program)
 
-        engine.aPositionLocation = GLES20.glGetAttribLocation(engine.program, Constants.A_POSITION)
-        GLES20.glEnableVertexAttribArray(engine.aPositionLocation)
-        GLES20.glVertexAttribPointer(
+        engine.aPositionLocation = Engine.gles20.glGetAttribLocation(engine.program, Constants.A_POSITION)
+        Engine.gles20.glEnableVertexAttribArray(engine.aPositionLocation)
+        Engine.gles20.glVertexAttribPointer(
             engine.aPositionLocation, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT,
-            false, Constants.STRIDE, vertexData
+            false, Constants.STRIDE, vertexData!!
         )
 
-        engine.uColorLocation = GLES20.glGetUniformLocation(engine.program, Constants.U_COLOR)
-        GLES20.glUniform4fv(engine.uColorLocation, 1, color, 0)
+        engine.uColorLocation = Engine.gles20.glGetUniformLocation(engine.program, Constants.U_COLOR)
+        Engine.gles20.glUniform4fv(engine.uColorLocation, color)
 
-        engine.uMatrixLocation = GLES20.glGetUniformLocation(engine.program, Constants.U_MATRIX)
-        GLES20.glUniformMatrix4fv(engine.uMatrixLocation, 1, false, engine.scratch, 0)
+        engine.uMatrixLocation = Engine.gles20.glGetUniformLocation(engine.program, Constants.U_MATRIX)
+        Engine.gles20.glUniformMatrix4fv(engine.uMatrixLocation,  false, engine.vPMatrix)
 
         //GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount)
-        GLES20.glDrawElements(
+        Engine.gles20.glDrawElements(
             GLES20.GL_TRIANGLES,
             drawOrder.size,
             GLES20.GL_UNSIGNED_SHORT,
-            drawListData
+            drawListData!!
         )
 
-        GLES20.glDisableVertexAttribArray(engine.aPositionLocation)
+        Engine.gles20.glDisableVertexAttribArray(engine.aPositionLocation)
     }
 }

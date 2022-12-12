@@ -1,10 +1,11 @@
-package com.bura.opengles.`object`
+package com.bura.common.objects
 
-import android.opengl.GLES20
-import com.bura.opengles.engine.Engine
-import com.bura.opengles.util.Constants
-import com.bura.opengles.util.TextureUtil
+import com.bura.common.engine.Engine
+import com.bura.common.engine.Engine.Companion.gles20
+import com.bura.common.util.Constants
+import com.bura.common.util.GLES20
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 
@@ -12,7 +13,7 @@ class Texture(
     engine: Engine,
     x: Float, y: Float,
     width: Float, height: Float,
-    resourceId: Int
+    private val resourceId: Int
 ) : Shape(engine, x, y) {
 
     private val rectangleVertices = floatArrayOf(
@@ -32,7 +33,7 @@ class Texture(
     override var vertexData: FloatBuffer? =
        ByteBuffer
             .allocateDirect(rectangleVertices.size * Constants.BYTES_PER_FLOAT)
-            .order(java.nio.ByteOrder.nativeOrder())
+            .order(ByteOrder.nativeOrder())
             .asFloatBuffer().apply {
             put(rectangleVertices)
             position(0)
@@ -41,7 +42,7 @@ class Texture(
     private var textureData: FloatBuffer? =
         ByteBuffer
             .allocateDirect(textureVertices.size * Constants.BYTES_PER_FLOAT)
-            .order(java.nio.ByteOrder.nativeOrder())
+            .order(ByteOrder.nativeOrder())
             .asFloatBuffer().apply {
                 put(textureVertices)
                 position(0)
@@ -51,51 +52,51 @@ class Texture(
 
     private val drawListData: ShortBuffer? = ByteBuffer
     .allocateDirect(drawOrder.size * 2)
-    .order(java.nio.ByteOrder.nativeOrder())
+    .order(ByteOrder.nativeOrder())
     .asShortBuffer().apply {
             put(drawOrder)
             position(0)
     }
 
-    private val glTextureId = TextureUtil.getGLTextureFromResourceId(resourceId)
-
     override fun draw() {
-        GLES20.glUseProgram(engine.textureProgram)
+        gles20.glUseProgram(engine.textureProgram)
 
         engine.uTextureLocation =
-            GLES20.glGetUniformLocation(engine.textureProgram, Constants.U_TEXTURE)
+            gles20.glGetUniformLocation(engine.textureProgram, Constants.U_TEXTURE)
         engine.aPositionLocation =
-            GLES20.glGetAttribLocation(engine.textureProgram, Constants.A_POSITION)
+            gles20.glGetAttribLocation(engine.textureProgram, Constants.A_POSITION)
         engine.aTextureLocation =
-            GLES20.glGetAttribLocation(engine.textureProgram, Constants.A_TEXTURE)
+            gles20.glGetAttribLocation(engine.textureProgram, Constants.A_TEXTURE)
         engine.uMatrixLocation =
-            GLES20.glGetUniformLocation(engine.textureProgram, Constants.U_MATRIX)
+            gles20.glGetUniformLocation(engine.textureProgram, Constants.U_MATRIX)
 
-        GLES20.glUniform1i(engine.uTextureLocation, glTextureId)
+        gles20.glUniform1i(engine.uTextureLocation, resourceId)
 
-        GLES20.glUniformMatrix4fv(engine.uMatrixLocation, 1, false, engine.scratch, 0)
+        gles20.glUniformMatrix4fv(engine.uMatrixLocation,false, engine.scratch)
 
-        GLES20.glVertexAttribPointer(
+        gles20.glVertexAttribPointer(
             engine.aPositionLocation, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, Constants.STRIDE, vertexData
+            GLES20.GL_FLOAT, false, Constants.STRIDE, vertexData!!
         )
 
-        GLES20.glVertexAttribPointer(
+        gles20.glVertexAttribPointer(
             engine.aTextureLocation, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, Constants.STRIDE, textureData
+            GLES20.GL_FLOAT, false, Constants.STRIDE, textureData!!
         )
 
-        GLES20.glEnableVertexAttribArray(engine.aPositionLocation)
-        GLES20.glEnableVertexAttribArray(engine.aTextureLocation)
+        gles20.glEnableVertexAttribArray(engine.aPositionLocation)
+        gles20.glEnableVertexAttribArray(engine.aTextureLocation)
 
-        GLES20.glDrawElements(
-            GLES20.GL_TRIANGLES,
-            drawOrder.size,
-            GLES20.GL_UNSIGNED_SHORT,
-            drawListData
-        )
+        drawListData?.let {
+            gles20.glDrawElements(
+                GLES20.GL_TRIANGLES,
+                drawOrder.size,
+                GLES20.GL_UNSIGNED_SHORT,
+                it
+            )
+        }
 
-        GLES20.glDisableVertexAttribArray(engine.aPositionLocation)
-        GLES20.glDisableVertexAttribArray(engine.aTextureLocation)
+        gles20.glDisableVertexAttribArray(engine.aPositionLocation)
+        gles20.glDisableVertexAttribArray(engine.aTextureLocation)
     }
 }

@@ -1,6 +1,4 @@
-package com.bura.opengles.util
-
-import android.util.Log
+package com.bura.common.util
 
 class FPSCounter {
     var startTime = System.nanoTime()
@@ -9,7 +7,7 @@ class FPSCounter {
     fun logFrame() {
         frames++
         if (System.nanoTime() - startTime >= 1000000000) {
-            Log.d("FPSCounter", "fps: $frames")
+            println("fps: $frames")
             frames = 0
             startTime = System.nanoTime()
         }

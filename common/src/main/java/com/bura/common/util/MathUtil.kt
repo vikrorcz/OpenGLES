@@ -1,4 +1,4 @@
-package com.bura.opengles.util
+package com.bura.common.util
 
 import kotlin.math.atan2
 import kotlin.math.pow

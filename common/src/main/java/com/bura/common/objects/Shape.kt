@@ -1,6 +1,6 @@
-package com.bura.opengles.`object`
+package com.bura.common.objects
 
-import com.bura.opengles.engine.Engine
+import com.bura.common.engine.Engine
 import java.nio.FloatBuffer
 
 

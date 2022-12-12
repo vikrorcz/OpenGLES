@@ -10,6 +10,15 @@ java {
 
 dependencies {
     implementation project(':common')
+
+    //option 1
+    implementation fileTree(dir: "common", includes: ["*.jar"])
+
+    //option 2
+    //api project(":common")
+
+
+
     implementation files('libs\\lwjgl.jar')
     implementation files('libs\\lwjgl-assimp.jar')
     implementation files('libs\\lwjgl-assimp-javadoc.jar')

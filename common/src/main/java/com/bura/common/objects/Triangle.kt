@@ -1,9 +1,10 @@
-package objects
+package com.bura.common.objects
 
 
 import com.bura.common.util.Constants
-import com.bura.common.util.GLESUtil
-import engine.Engine
+import com.bura.common.util.GLES20
+import com.bura.common.engine.Engine
+import com.bura.common.engine.Engine.Companion.gles20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -41,28 +42,27 @@ class Triangle(
         }
 
 
-
     fun draw() {
 
-        engine.GLES20.glUseProgram(engine.program)
+        gles20.glUseProgram(engine.program)
 
-        engine.aPositionLocation = engine.GLES20.glGetAttribLocation(engine.program, "a_Position")
+        engine.aPositionLocation = gles20.glGetAttribLocation(engine.program, "a_Position")
 
-        engine.GLES20.glEnableVertexAttribArray(engine.aPositionLocation)
-        engine.GLES20.glVertexAttribPointer(
-            engine.aPositionLocation, Constants.COORDS_PER_VERTEX,  GLESUtil.GL_FLOAT,
+        gles20.glEnableVertexAttribArray(engine.aPositionLocation)
+        gles20.glVertexAttribPointer(
+            engine.aPositionLocation, Constants.COORDS_PER_VERTEX,  GLES20.GL_FLOAT,
             false, Constants.STRIDE, vertexData!!
         )
 
-        engine.uColorLocation = engine.GLES20.glGetUniformLocation(engine.program, "u_Color")
-        engine.GLES20.glUniform4fv(engine.uColorLocation, color)
+        engine.uColorLocation = gles20.glGetUniformLocation(engine.program, "u_Color")
+        gles20.glUniform4fv(engine.uColorLocation, color)
 
-        engine.uMatrixLocation = engine.GLES20.glGetUniformLocation(engine.program, Constants.U_MATRIX)
-        engine.GLES20.glUniformMatrix4fv(engine.uMatrixLocation,  false, engine.scratch.toArray())
+        engine.uMatrixLocation = gles20.glGetUniformLocation(engine.program, Constants.U_MATRIX)
+        gles20.glUniformMatrix4fv(engine.uMatrixLocation, false, engine.scratch)
 
-        engine.GLES20.glDrawArrays(GLESUtil.GL_TRIANGLES, 0, vertexCount)
+        gles20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
 
-        engine.GLES20.glDisableVertexAttribArray(engine.aPositionLocation)
+        gles20.glDisableVertexAttribArray(engine.aPositionLocation)
 
     }
 }

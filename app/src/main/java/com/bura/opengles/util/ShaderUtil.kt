@@ -2,6 +2,7 @@ package com.bura.opengles.util
 
 import android.opengl.GLES20
 import android.util.Log
+import com.bura.common.util.Constants
 
 class ShaderUtil {
     companion object {
