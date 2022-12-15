@@ -191,6 +191,29 @@ public class Matrix4f {
         }
     }
 
+    public static void scaleM(float[] sm, int smOffset,
+                              float[] m, int mOffset,
+                              float x, float y, float z) {
+        for (int i=0 ; i<4 ; i++) {
+            int smi = smOffset + i;
+            int mi = mOffset + i;
+            sm[     smi] = m[     mi] * x;
+            sm[ 4 + smi] = m[ 4 + mi] * y;
+            sm[ 8 + smi] = m[ 8 + mi] * z;
+            sm[12 + smi] = m[12 + mi];
+        }
+    }
+
+    public static void scaleM(float[] m, int mOffset,
+                              float x, float y, float z) {
+        for (int i=0 ; i<4 ; i++) {
+            int mi = mOffset + i;
+            m[     mi] *= x;
+            m[ 4 + mi] *= y;
+            m[ 8 + mi] *= z;
+        }
+    }
+
     /**
      * Implementation of Android multiplyMM
      */

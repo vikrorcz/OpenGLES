@@ -10,7 +10,7 @@ import android.view.MotionEvent
 
 class MyGLSurfaceView(context: Context): GLSurfaceView(context) {
 
-    private lateinit var renderer: MyRenderer;
+    private lateinit var renderer: MyRenderer
     private var rendererSet = false
 
     init {

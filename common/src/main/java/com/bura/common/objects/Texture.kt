@@ -4,6 +4,7 @@ import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.util.Constants
 import com.bura.common.util.GLES20
+import com.bura.common.util.Matrix4f
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -11,8 +12,8 @@ import java.nio.ShortBuffer
 
 class Texture(
     engine: Engine,
-    x: Float, y: Float,
-    width: Float, height: Float,
+    override var x: Float, override var y: Float,
+    override var width: Float, override var height: Float,
     private val resourceId: Int
 ) : Shape(engine, x, y) {
 
@@ -72,17 +73,21 @@ class Texture(
 
         gles20.glUniform1i(engine.uTextureLocation, resourceId)
 
-        gles20.glUniformMatrix4fv(engine.uMatrixLocation,false, engine.scratch)
+        gles20.glUniformMatrix4fv(engine.uMatrixLocation,false, engine.vPMatrix)
 
-        gles20.glVertexAttribPointer(
-            engine.aPositionLocation, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, Constants.STRIDE, vertexData!!
-        )
+        vertexData?.let {
+            gles20.glVertexAttribPointer(
+                engine.aPositionLocation, Constants.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false, Constants.STRIDE, it
+            )
+        }
 
-        gles20.glVertexAttribPointer(
-            engine.aTextureLocation, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, Constants.STRIDE, textureData!!
-        )
+        textureData?.let {
+            gles20.glVertexAttribPointer(
+                engine.aTextureLocation, Constants.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false, Constants.STRIDE, it
+            )
+        }
 
         gles20.glEnableVertexAttribArray(engine.aPositionLocation)
         gles20.glEnableVertexAttribArray(engine.aTextureLocation)

@@ -22,9 +22,10 @@ import kotlin.math.sqrt
 class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
     private var engine = Engine().also {
         gles20 = AndroidGles20()
+        it.endPoint = Engine.DeviceType.ANDROID
         it.textureUtil = AndroidTextureUtil(context)
-        //it.createObjects()
     }
+
 
     private val myRenderer = MyRenderer(engine)
 
@@ -67,9 +68,6 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceCreated(unused: GL10, eglConfig: EGLConfig) {
-        gles20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-
-        //engine.createShaders()
         createShaders()
         engine.createObjects()
     }
@@ -77,13 +75,10 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         gles20.glViewport(0, 0, width, height)
         val ratio: Float = width.toFloat() / height
-        println("ratio= $ratio")
         engine.screenWidthPixel = width
         engine.screenHeightPixel = height
         engine.screenWidth = ratio * 2
         engine.screenHeight = ratio
-        println("ScreenWidth: " + engine.screenWidth + "ScreenHeight: " + engine.screenHeight)
-        //engine.projectionMatrix = Matrix4f.frustum(-ratio, ratio, -1f, 1f, 3f, 7f)
         Matrix4f.frustum(engine.projectionMatrix, -ratio, ratio, -1f, 1f, 3f, 7f)
         for (i in 0 until engine.projectionMatrix.size) {
             println("projectionMatrix= " + "[" + i + "]" + engine.projectionMatrix[i])
@@ -91,12 +86,8 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(unused: GL10) {
-        inputUpdate()
-        myRenderer.draw()
+        myRenderer.draw(::inputUpdate)
     }
-
-
-
 
     private fun inputUpdate() {
         when (currentMotionEvent) {
@@ -115,7 +106,6 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
                 val deltaY = engine.screenTouchY - cy
 
                 val dif = engine.joystickLeft.outerWidth / 8
-                //val dif = 0.25f
 
                 val distance = sqrt(
                     (deltaX - dif).toDouble().pow(2.0) + (deltaY + dif).toDouble().pow(2.0)
@@ -131,7 +121,6 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
                     engine.joystickLeft.angle = angle.toFloat()
                 }
 
-
                 if (distance <= Constants.JOYSTICK_AREA) {
                     engine.joystickLeft.isTouched = true
                     engine.joystickLeft.actuatorX = deltaX - dif
@@ -141,8 +130,6 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
                     engine.joystickLeft.actuatorX = (deltaX - dif) / distance * Constants.JOYSTICK_AREA
                     engine.joystickLeft.actuatorY  = (deltaY + dif) / distance * Constants.JOYSTICK_AREA
                 }
-                //triangle.centerX = engine.cameraCenterX
-                //triangle.centerY = engine.cameraCenterY
             }
             MotionEvent.ACTION_UP -> engine.joystickLeft.isTouched = false
         }

@@ -6,19 +6,15 @@ import com.bura.common.util.TextureUtil
 import com.bura.common.util.TextureUtil.Companion.textureHandle
 import com.bura.desktop.util.IOUtils.Companion.ioResourceToByteBuffer
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengles.GLES20.*
 import org.lwjgl.stb.STBImage
-import java.awt.image.BufferedImage
-import java.io.IOException
 import java.nio.IntBuffer
-import javax.imageio.ImageIO
 
 
 class LwjglTextureUtil: TextureUtil {
     override fun createTextures() {
         textureHandle[0] = loadTexture(TextureUtil.playerTextureLocation)
-        textureHandle[1] = loadTexture(TextureUtil.joystickOuterTextureLocation)
-        textureHandle[2] = loadTexture(TextureUtil.joystickInnerTextureLocation)
+        textureHandle[1] = loadTexture(TextureUtil.joystickInnerTextureLocation)
+        textureHandle[2] = loadTexture(TextureUtil.joystickOuterTextureLocation)
 
         gles20.glActiveTexture(GLES20.GL_TEXTURE0)
         gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
@@ -30,59 +26,54 @@ class LwjglTextureUtil: TextureUtil {
 
 
     override fun loadTexture(resourceLocation: String): Int {
-        val width: IntBuffer = BufferUtils.createIntBuffer(1)
-        val height: IntBuffer = BufferUtils.createIntBuffer(1)
-        val components: IntBuffer = BufferUtils.createIntBuffer(1)
-        val data = STBImage.stbi_load_from_memory(
-            ioResourceToByteBuffer(
-                resourceLocation,
-                1024
-            ), width, height, components, 4
-        )
         val textureHandle = IntArray(1)
-        glGenTextures(textureHandle)
+        gles20.glGenTextures(1, textureHandle)
+
         if (textureHandle[0] != 0) {
-            glBindTexture(GL_TEXTURE_2D, textureHandle[0])
-
-            glEnable(GLES20.GL_BLEND)
-            glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA)
-
-            glTexParameteri(
-                GL_TEXTURE_2D,
-                GL_TEXTURE_MIN_FILTER,
-                GL_LINEAR
+            val width: IntBuffer = BufferUtils.createIntBuffer(1)
+            val height: IntBuffer = BufferUtils.createIntBuffer(1)
+            val components: IntBuffer = BufferUtils.createIntBuffer(1)
+            val data = STBImage.stbi_load_from_memory(
+                ioResourceToByteBuffer(
+                    resourceLocation,
+                    1024
+                ), width, height, components, 4
             )
-            glTexParameteri(
-                GL_TEXTURE_2D,
-                GL_TEXTURE_MAG_FILTER,
-                GL_LINEAR
+
+            gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
+
+            gles20.glEnable(GLES20.GL_BLEND)
+            gles20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+
+            gles20.glTexParameteri(
+                GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MIN_FILTER,
+                GLES20.GL_LINEAR
             )
-            glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RGBA,
-                width.get(),
-                height.get(),
-                0,
-                GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                data
+            gles20.glTexParameteri(
+                GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MAG_FILTER,
+                GLES20.GL_LINEAR
             )
             if (data != null) {
+                gles20.glTexImage2D(
+                    GLES20.GL_TEXTURE_2D,
+                    0,
+                    GLES20.GL_RGBA,
+                    width.get(),
+                    height.get(),
+                    0,
+                    GLES20.GL_RGBA,
+                    GLES20.GL_UNSIGNED_BYTE,
+                    data.asFloatBuffer()
+                )
                 STBImage.stbi_image_free(data)
             }
         }
-
+        if (textureHandle[0] == 0) {
+            throw RuntimeException("Error loading texture.")
+        }
+        println("textureHandle" + textureHandle[0])
         return textureHandle[0]
     }
-
-    private fun loadImage(loc: String): BufferedImage? {
-        try {
-            return ImageIO.read(javaClass.getResource(loc))
-        } catch (e: IOException) {
-            //Error Handling Here
-        }
-        return null
-    }
-
 }

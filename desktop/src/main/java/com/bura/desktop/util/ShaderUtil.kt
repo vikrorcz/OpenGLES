@@ -29,9 +29,9 @@ class ShaderUtil(private val engine: Engine) {
     fun createTextureProgram() {
         val program = GLES20.glCreateProgram()
         val vshader: Int =
-            DemoUtils.createShader("foo/texturedQuad.vs", GLES20.GL_VERTEX_SHADER)
+            DemoUtils.createShader("foo/texture_vertex_shader.glsl", GLES20.GL_VERTEX_SHADER)
         val fshader: Int =
-            DemoUtils.createShader("foo/texturedQuad.fs", GLES20.GL_FRAGMENT_SHADER)
+            DemoUtils.createShader("foo/texture_fragment_shader.glsl", GLES20.GL_FRAGMENT_SHADER)
         GLES20.glAttachShader(program, vshader)
         GLES20.glAttachShader(program, fshader)
         GLES20.glLinkProgram(program)

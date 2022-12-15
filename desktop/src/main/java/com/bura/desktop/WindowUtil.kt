@@ -1,22 +1,26 @@
 package com.bura.desktop
 
 import com.bura.common.engine.Engine
+import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.engine.MyRenderer
 import com.bura.common.util.Matrix4f
 import com.bura.desktop.util.Input
 import com.bura.desktop.util.LwjglGles20
 import com.bura.desktop.util.LwjglTextureUtil
 import com.bura.desktop.util.ShaderUtil
+import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.glfwGetCursorPos
 import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengles.GLES
-import org.lwjgl.opengles.GLES20
 import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import java.nio.DoubleBuffer
+
 
 class WindowUtil {
     private var window: Long = 0
@@ -25,7 +29,9 @@ class WindowUtil {
     private val screenHeightPixel = 720
 
     private val engine = Engine().also {
-        Engine.gles20 = LwjglGles20()
+        gles20 = LwjglGles20()
+        it.endPoint = Engine.DeviceType.DESKTOP
+        it.textureUtil = LwjglTextureUtil()
     }
 
     private val myRenderer = MyRenderer(engine)
@@ -35,15 +41,15 @@ class WindowUtil {
         if (!GLFW.glfwInit()) {
             throw IllegalStateException("Unable to initialize")
         }
-
         GLFW.glfwDefaultWindowHints()
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
 
-        //Use OPENGLES
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 2)//3
+        //Use OpenGLES
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 2)//use OpenGLES 2.0, for 3.0 use 3
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 0)
         GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_ES_API)
+
 
         window = GLFW.glfwCreateWindow(
             screenWidthPixel,
@@ -53,6 +59,8 @@ class WindowUtil {
             MemoryUtil.NULL
         )
 
+       //window = GLFW.glfwCreateWindow(screenWidthPixel, screenHeightPixel, "", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);  fullscreen
+
         MemoryStack.stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
             val pHeight = stack.mallocInt(1)
@@ -61,12 +69,12 @@ class WindowUtil {
             GLFW.glfwGetWindowSize(window, pWidth, pHeight)
 
             // Get the resolution of the primary monitor
-            val vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor())
+            val vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()) ?: return
 
             // Center the window
             GLFW.glfwSetWindowPos(
                 window,
-                (vidmode!!.width() - pWidth[0]) / 2,
+                (vidmode.width() - pWidth[0]) / 2,
                 (vidmode.height() - pHeight[0]) / 2
             )
         }
@@ -82,59 +90,71 @@ class WindowUtil {
         Configuration.OPENGLES_EXPLICIT_INIT.set(true)
         GL.getFunctionProvider()?.let { GLES.create(it) }
         GLES.createCapabilities()
-        GLES20.glViewport(0, 0, screenWidthPixel, screenHeightPixel)
-        val ratio = screenWidthPixel.toFloat() / screenHeightPixel
 
+        gles20.glViewport(0, 0, screenWidthPixel, screenHeightPixel)
+        val ratio = screenWidthPixel.toFloat() / screenHeightPixel
         val shaderUtil = ShaderUtil(engine)
         shaderUtil.createProgram()
         shaderUtil.createTextureProgram()
 
+        engine.screenWidthPixel = screenWidthPixel
+        engine.screenHeightPixel = screenHeightPixel
+        engine.screenWidth = ratio * 2
+        engine.screenHeight = ratio
         Matrix4f.frustum(engine.projectionMatrix, -ratio, ratio, -1f, 1f, 3f, 7f)
 
-        engine.textureUtil = LwjglTextureUtil()
+        engine.endPoint = Engine.DeviceType.DESKTOP
         engine.createObjects()
     }
 
     private fun loop() {
         while (!GLFW.glfwWindowShouldClose(window)) {
-            inputUpdate()
-
             GLFW.glfwPollEvents()
-
+            inputUpdate()
             myRenderer.draw()
-
             GLFW.glfwSwapBuffers(window)
         }
-
     }
 
-    var posX = 0f
-    var posY = 0f
+    private var posX = 0f
+    private var posY = 0f
+    private var cursorX: Double = 0.0
+    private var cursorY: Double = 0.0
+    private val xBuffer: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
+    private val yBuffer: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
 
     private fun inputUpdate() {
         if (Input.keys[GLFW.GLFW_KEY_W] || Input.keys[GLFW.GLFW_KEY_UP]) {
-            //redColor += 0.01f
             posY += 0.01f
-            //engine.scratch = Matrix4f.translateM()
-            Matrix4f.translateM(engine.scratch, 0, posY,posY,0f)
-            println("W")
         }
 
         if (Input.keys[GLFW.GLFW_KEY_S] || Input.keys[GLFW.GLFW_KEY_DOWN]) {
-            //redColor -= 0.01f
             posY -= 0.01f
-            Matrix4f.translateM(engine.scratch, 0, posX, posY, 0f)
         }
 
         if (Input.keys[GLFW.GLFW_KEY_A] || Input.keys[GLFW.GLFW_KEY_LEFT]) {
             posX -= 0.01f
-            Matrix4f.translateM(engine.scratch, 0, posX, posY, 0f)
         }
 
         if (Input.keys[GLFW.GLFW_KEY_D] || Input.keys[GLFW.GLFW_KEY_RIGHT]) {
             posX += 0.01f
-            Matrix4f.translateM(engine.scratch, 0, posX, posY, 0f)
         }
+        engine.texture.centerX = posX
+        engine.texture.centerY = posY
+
+        println("scratchX= $posX")
+        println("scratchY= $posY")
+        glfwGetCursorPos(window, xBuffer, yBuffer)
+        cursorX = xBuffer.get(0)
+        cursorY = yBuffer.get(0)
+
+        engine.screenTouchX = (cursorX / engine.screenWidthPixel * 4).toFloat()
+        engine.screenTouchX -= 2
+        engine.screenTouchY = (cursorY / engine.screenHeightPixel * 2).toFloat()
+        engine.screenTouchY = -engine.screenTouchY + 1
+
+        println("screenTouchX= " + engine.screenTouchX)
+        println("screenTouchY= " + engine.screenTouchY)
     }
 
     fun setup() {

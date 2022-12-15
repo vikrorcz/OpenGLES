@@ -11,10 +11,12 @@ class Engine {
         lateinit var gles20: GLES20
     }
 
-    enum class type {
+    enum class DeviceType {
         ANDROID,
         DESKTOP
     }
+
+    lateinit var endPoint: DeviceType
 
     lateinit var textureUtil: TextureUtil
     var matrixUtil = MatrixUtil(this)
@@ -31,9 +33,6 @@ class Engine {
     val vPMatrix = FloatArray(16)
     var projectionMatrix = FloatArray(16)
     var viewMatrix = FloatArray(16)
-    var rotationMatrix = FloatArray(16)
-    var translationMatrix = FloatArray(16)
-    var scratch = FloatArray(16)
 
     var screenWidthPixel = 0
     var screenHeightPixel = 0
@@ -53,13 +52,19 @@ class Engine {
     lateinit var triangle: Triangle
     lateinit var joystickLeft: Joystick
     lateinit var texture: Texture
+    lateinit var texture2: Texture
 
     fun createObjects() {
 
-        triangle = Triangle(this, 0f,0f,1f)
-
         textureUtil.createTextures()
+
+        triangle = Triangle(this, 0.5f,0f,1f)
+
+        //texture = Texture(this, -1f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)//   texture = Texture(this, -0.2f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
         texture = Texture(this, -0.2f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
+
+        texture2 = Texture(this, -0.75f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
+
         joystickLeft = Joystick(this, 1)
     }
 }

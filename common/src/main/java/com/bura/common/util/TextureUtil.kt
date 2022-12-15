@@ -26,5 +26,4 @@ interface TextureUtil {
     fun createTextures()
 
     fun loadTexture(resourceLocation: String): Int
-
 }
