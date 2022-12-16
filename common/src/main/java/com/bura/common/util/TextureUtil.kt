@@ -3,18 +3,20 @@ package com.bura.common.util
 interface TextureUtil {
 
     companion object {
-        val textureHandle = IntArray(3)
+        val textureHandle = IntArray(4)
 
-        const val path = "foo/"
+        private const val path = "foo/"
 
         //todo perhaps create a hashmap
         const val playerTextureLocation = "${path}player.png"
         const val joystickOuterTextureLocation = "${path}joystick_outer.png"
         const val joystickInnerTextureLocation = "${path}joystick_inner.png"
+        const val machineGunShotTextureLocation = "${path}machinegunshot.png"
 
         const val playerTextureId = 0
         const val joystickOuterId = 1
         const val joystickInnerId = 2
+        const val machineGunShotId = 3
 
         val resourcesHM = hashMapOf<String, Int>().also {
             it[playerTextureLocation] = playerTextureId

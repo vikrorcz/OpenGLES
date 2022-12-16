@@ -25,23 +25,4 @@ abstract class Shape(
     open var mTempMatrix = FloatArray(16)
 
     abstract fun draw()
-
-    protected fun updateTranslationAndRotationMatrix() {
-        Matrix4f.setIdentityM(engine.texture.mModelMatrix, 0)
-        Matrix4f.translateM(engine.texture.mModelMatrix, 0, engine.texture.centerX, engine.texture.centerY, 0f)
-
-        Matrix4f.setRotateM(
-            engine.texture.rotationMatrix, 0,
-            Math.toDegrees(
-                MathUtil.getAngle(engine.texture.centerX, engine.texture.centerY, engine.screenTouchX, engine.screenTouchY)
-            ).toFloat() + 90,
-            0f,0f,1f
-        )
-
-        engine.texture.mTempMatrix = engine.texture.mModelMatrix.clone()
-        Matrix4f.multiply(engine.texture.mModelMatrix, engine.texture.mTempMatrix, engine.texture.rotationMatrix)
-
-        engine.texture.mTempMatrix = engine.vPMatrix.clone()
-        Matrix4f.multiply(engine.vPMatrix, engine.texture.mTempMatrix, engine.texture.mModelMatrix)
-    }
 }

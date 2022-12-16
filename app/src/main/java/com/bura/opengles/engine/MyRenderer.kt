@@ -20,12 +20,10 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
-    private var engine = Engine().also {
+    private var engine = Engine(Engine.DeviceType.ANDROID).also {
         gles20 = AndroidGles20()
-        it.endPoint = Engine.DeviceType.ANDROID
         it.textureUtil = AndroidTextureUtil(context)
     }
-
 
     private val myRenderer = MyRenderer(engine)
 
@@ -77,8 +75,8 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
         val ratio: Float = width.toFloat() / height
         engine.screenWidthPixel = width
         engine.screenHeightPixel = height
-        engine.screenWidth = ratio * 2
-        engine.screenHeight = ratio
+        //engine.screenWidth = ratio
+        //engine.screenHeight = ratio
         Matrix4f.frustum(engine.projectionMatrix, -ratio, ratio, -1f, 1f, 3f, 7f)
         for (i in 0 until engine.projectionMatrix.size) {
             println("projectionMatrix= " + "[" + i + "]" + engine.projectionMatrix[i])
@@ -86,7 +84,8 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(unused: GL10) {
-        myRenderer.draw(::inputUpdate)
+        inputUpdate()
+        myRenderer.draw()
     }
 
     private fun inputUpdate() {
@@ -96,9 +95,6 @@ class MyRenderer(private val context: Context): GLSurfaceView.Renderer {
                 engine.screenTouchX -= 2
                 engine.screenTouchY = touchY / engine.screenHeightPixel * 2
                 engine.screenTouchY = -engine.screenTouchY + 1
-
-                println("x= " + engine.screenTouchX)
-                println("y= " + engine.screenTouchY)
 
                 val cx: Float = engine.joystickLeft.centerX
                 val cy: Float = engine.joystickLeft.centerY

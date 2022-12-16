@@ -27,15 +27,23 @@ class MatrixUtil(private val engine: Engine) {
     }
 
 
-    fun updateMatrix(shape: Shape, angle: Float) {
+    fun updateMatrix(shape: Shape, angle: Float? = null) {
         Matrix4f.setIdentityM(shape.mModelMatrix, 0)
         Matrix4f.translateM(shape.mModelMatrix, 0, shape.centerX, shape.centerY, 0f)
 
+        //Scaling for desktop monitors
+        Matrix4f.scaleM(shape.mModelMatrix, 0, engine.scaleFactor, engine.scaleFactor, 1f)
+
+        Matrix4f.setIdentityM(shape.rotationMatrix, 0)
         Matrix4f.setRotateM(
             shape.rotationMatrix, 0,
-            angle,
+            angle ?: 0f,
             0f,0f,1f
         )
+
+        Matrix4f.translateM(shape.rotationMatrix, 0,-shape.x - shape.width / 5f, shape.y - shape.height / 5f, 0f)
+        //Matrix4f.translateM(shape.rotationMatrix, 0,-shape.x - shape.width / 5f, shape.y - shape.height / 5f, 0f)
+
         shape.mTempMatrix = shape.mModelMatrix.clone()
         Matrix4f.multiply(shape.mModelMatrix, shape.mTempMatrix, shape.rotationMatrix)
 

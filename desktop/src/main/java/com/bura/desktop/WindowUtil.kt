@@ -3,6 +3,8 @@ package com.bura.desktop
 import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.engine.MyRenderer
+import com.bura.common.gameobject.Bullet
+import com.bura.common.util.MathUtil
 import com.bura.common.util.Matrix4f
 import com.bura.desktop.util.Input
 import com.bura.desktop.util.LwjglGles20
@@ -11,8 +13,6 @@ import com.bura.desktop.util.ShaderUtil
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFW.glfwGetCursorPos
-import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengles.GLES
@@ -20,17 +20,18 @@ import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.nio.DoubleBuffer
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 class WindowUtil {
     private var window: Long = 0
     private lateinit var input: Input
-    private val screenWidthPixel = 1480
-    private val screenHeightPixel = 720
+    private val screenWidthPixel = 1920 //  1480  |  2280   |  2960
+    private val screenHeightPixel = 1080 // 720   |  1080   |  1440
 
-    private val engine = Engine().also {
+    private val engine = Engine(Engine.DeviceType.DESKTOP).also {
         gles20 = LwjglGles20()
-        it.endPoint = Engine.DeviceType.DESKTOP
         it.textureUtil = LwjglTextureUtil()
     }
 
@@ -59,7 +60,10 @@ class WindowUtil {
             MemoryUtil.NULL
         )
 
-       //window = GLFW.glfwCreateWindow(screenWidthPixel, screenHeightPixel, "", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);  fullscreen
+
+
+        //fullscreen
+        window = GLFW.glfwCreateWindow(screenWidthPixel, screenHeightPixel, "OpenGLES", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);
 
         MemoryStack.stackPush().use { stack ->
             val pWidth = stack.mallocInt(1)
@@ -81,7 +85,7 @@ class WindowUtil {
 
         //init key callbacks
         input = Input()
-        glfwSetKeyCallback(window, input)
+        GLFW.glfwSetKeyCallback(window, input)
 
         GLFW.glfwMakeContextCurrent(window)
         GLFW.glfwSwapInterval(1)//Enable V-Sync
@@ -99,11 +103,9 @@ class WindowUtil {
 
         engine.screenWidthPixel = screenWidthPixel
         engine.screenHeightPixel = screenHeightPixel
-        engine.screenWidth = ratio * 2
-        engine.screenHeight = ratio
+        //engine.screenWidth = ratio * 2
+        //engine.screenHeight = ratio
         Matrix4f.frustum(engine.projectionMatrix, -ratio, ratio, -1f, 1f, 3f, 7f)
-
-        engine.endPoint = Engine.DeviceType.DESKTOP
         engine.createObjects()
     }
 
@@ -116,35 +118,13 @@ class WindowUtil {
         }
     }
 
-    private var posX = 0f
-    private var posY = 0f
     private var cursorX: Double = 0.0
     private var cursorY: Double = 0.0
     private val xBuffer: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
     private val yBuffer: DoubleBuffer = BufferUtils.createDoubleBuffer(1)
 
     private fun inputUpdate() {
-        if (Input.keys[GLFW.GLFW_KEY_W] || Input.keys[GLFW.GLFW_KEY_UP]) {
-            posY += 0.01f
-        }
-
-        if (Input.keys[GLFW.GLFW_KEY_S] || Input.keys[GLFW.GLFW_KEY_DOWN]) {
-            posY -= 0.01f
-        }
-
-        if (Input.keys[GLFW.GLFW_KEY_A] || Input.keys[GLFW.GLFW_KEY_LEFT]) {
-            posX -= 0.01f
-        }
-
-        if (Input.keys[GLFW.GLFW_KEY_D] || Input.keys[GLFW.GLFW_KEY_RIGHT]) {
-            posX += 0.01f
-        }
-        engine.texture.centerX = posX
-        engine.texture.centerY = posY
-
-        println("scratchX= $posX")
-        println("scratchY= $posY")
-        glfwGetCursorPos(window, xBuffer, yBuffer)
+        GLFW.glfwGetCursorPos(window, xBuffer, yBuffer)
         cursorX = xBuffer.get(0)
         cursorY = yBuffer.get(0)
 
@@ -153,8 +133,65 @@ class WindowUtil {
         engine.screenTouchY = (cursorY / engine.screenHeightPixel * 2).toFloat()
         engine.screenTouchY = -engine.screenTouchY + 1
 
-        println("screenTouchX= " + engine.screenTouchX)
-        println("screenTouchY= " + engine.screenTouchY)
+        if (Input.keys[GLFW.GLFW_KEY_W] || Input.keys[GLFW.GLFW_KEY_UP]) {
+            engine.player.centerY += 0.01f
+        }
+
+        if (Input.keys[GLFW.GLFW_KEY_S] || Input.keys[GLFW.GLFW_KEY_DOWN]) {
+            engine.player.centerY -= 0.01f
+        }
+
+        if (Input.keys[GLFW.GLFW_KEY_A] || Input.keys[GLFW.GLFW_KEY_LEFT]) {
+            engine.player.centerX -= 0.01f
+        }
+
+        if (Input.keys[GLFW.GLFW_KEY_D] || Input.keys[GLFW.GLFW_KEY_RIGHT]) {
+            engine.player.centerX += 0.01f
+        }
+        if (GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS ){
+            val x = engine.player.centerX
+            val y = engine.player.centerY + 0.05f//* engine.scaleFactor//+ 0.05f * engine.scaleFactor
+
+            val angle = MathUtil.getAngle(
+                engine.player.centerX, engine.player.centerY, engine.screenTouchX, engine.screenTouchY
+            ).toFloat()
+
+            val offsetX = 0f
+            val offsetY = 0.2f
+            val bulletX = x + (offsetX * cos(angle) - offsetY * sin(angle))
+            val bulletY = y + (offsetX * sin(angle) + offsetY * cos(angle));
+
+            val bullet1 = Bullet(engine, bulletX, bulletY).also {
+                it.angle = angle
+            }
+
+            val offsetY2 = 0.1f
+            val bulletX2 = x + (offsetX * cos(angle) - offsetY2 * sin(angle))
+            val bulletY2 = y + (offsetX * sin(angle) + offsetY2 * cos(angle));
+            val bullet2 = Bullet(engine, bulletX2, bulletY2).also {
+                it.angle = angle
+            }
+
+            val offsetY3 = -0.1f
+            val bulletX3 = x + (offsetX * cos(angle) - offsetY3 * sin(angle))
+            val bulletY3 = y + (offsetX * sin(angle) + offsetY3 * cos(angle));
+            val bullet3 = Bullet(engine, bulletX3, bulletY3).also {
+                it.angle = angle
+            }
+
+            val offsetY4 = -0.2f
+            val bulletX4 = x + (offsetX * cos(angle) - offsetY4 * sin(angle))
+            val bulletY4 = y + (offsetX * sin(angle) + offsetY4 * cos(angle));
+            val bullet4 = Bullet(engine, bulletX4, bulletY4).also {
+                it.angle = angle
+            }
+
+            engine.gameObjectArrayList.add(bullet1)
+            engine.gameObjectArrayList.add(bullet2)
+            engine.gameObjectArrayList.add(bullet3)
+            engine.gameObjectArrayList.add(bullet4)
+            
+        }
     }
 
     fun setup() {

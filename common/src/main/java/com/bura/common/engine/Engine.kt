@@ -1,11 +1,13 @@
 package com.bura.common.engine
 
+import com.bura.common.gameobject.GameObject
+import com.bura.common.gameobject.Player
 import com.bura.common.objects.Joystick
 import com.bura.common.objects.Texture
 import com.bura.common.objects.Triangle
 import com.bura.common.util.*
 
-class Engine {
+class Engine(val endPoint: DeviceType) {
 
     companion object {
         lateinit var gles20: GLES20
@@ -16,7 +18,7 @@ class Engine {
         DESKTOP
     }
 
-    lateinit var endPoint: DeviceType
+    //lateinit var endPoint: DeviceType
 
     lateinit var textureUtil: TextureUtil
     var matrixUtil = MatrixUtil(this)
@@ -37,13 +39,10 @@ class Engine {
     var screenWidthPixel = 0
     var screenHeightPixel = 0
 
-    var screenWidth = 0f //GL COORDS
-    var screenHeight = 0f  //GL COORDS
+    //var screenWidth = 0f //GL COORDS
+    //var screenHeight = 0f  //GL COORDS
     var screenTouchX = 0f //GL COORDS
     var screenTouchY = 0f //GL COORDS
-
-    var cameraCenterX = 0f
-    var cameraCenterY = 0f
 
     val fpsCounter = FPSCounter()
 
@@ -51,8 +50,20 @@ class Engine {
 
     lateinit var triangle: Triangle
     lateinit var joystickLeft: Joystick
-    lateinit var texture: Texture
     lateinit var texture2: Texture
+    lateinit var player: Player
+
+    /**
+     *  Desktop monitors are too big, therefore scale scaleFactor
+     *  scales down the content for better experience only on desktop devices
+     */
+    val scaleFactor = if (endPoint == DeviceType.DESKTOP) 0.75f else 1f//screenWidth / 4//1920
+    //val scaleWidth = screenWidth / 4
+    //val scaleHeight = screenHeight / 2//1080
+
+
+
+    var gameObjectArrayList = ArrayList<GameObject>()
 
     fun createObjects() {
 
@@ -60,8 +71,8 @@ class Engine {
 
         triangle = Triangle(this, 0.5f,0f,1f)
 
-        //texture = Texture(this, -1f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)//   texture = Texture(this, -0.2f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
-        texture = Texture(this, -0.2f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
+        player = Player(this, -0.2f, 0.2f)
+        gameObjectArrayList.add(player)
 
         texture2 = Texture(this, -0.75f, 0.2f, 1f, 1f, TextureUtil.playerTextureId)
 

@@ -15,6 +15,7 @@ class LwjglTextureUtil: TextureUtil {
         textureHandle[0] = loadTexture(TextureUtil.playerTextureLocation)
         textureHandle[1] = loadTexture(TextureUtil.joystickInnerTextureLocation)
         textureHandle[2] = loadTexture(TextureUtil.joystickOuterTextureLocation)
+        textureHandle[3] = loadTexture(TextureUtil.machineGunShotTextureLocation)
 
         gles20.glActiveTexture(GLES20.GL_TEXTURE0)
         gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0])
@@ -22,6 +23,8 @@ class LwjglTextureUtil: TextureUtil {
         gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[1])
         gles20.glActiveTexture(GLES20.GL_TEXTURE2)
         gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[2])
+        gles20.glActiveTexture(GLES20.GL_TEXTURE3)
+        gles20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[3])
     }
 
 
